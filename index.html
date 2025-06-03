@@ -12,15 +12,16 @@
             color: #fff;
             font-family: 'Press Start 2P', monospace;
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Allow content to stack vertically */
+            justify-content: center; /* Center menu-box */
             align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            padding-bottom: 50px;
+            padding-bottom: 70px; /* More space for footer */
             box-sizing: border-box;
             text-align: center;
-            overflow: hidden;
+            /* overflow-x: hidden; Removed to allow body scroll for chat */
         }
 
         #mute-button {
@@ -33,7 +34,7 @@
             color: #fff;
             border: 3px solid #fff;
             cursor: pointer;
-            font-size: 0.7em; /* Smaller font for button */
+            font-size: 0.7em;
             z-index: 200;
             transition: background-color 0.2s, color 0.2s;
         }
@@ -41,7 +42,6 @@
             background-color: #fff;
             color: #000;
         }
-
 
         .menu-box {
             position: relative;
@@ -53,235 +53,149 @@
             animation: glide 5s ease-in-out infinite;
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
             overflow: hidden;
+            margin-bottom: 30px; /* Space before chatbox */
         }
 
         @keyframes glide {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         #datetime-info {
-            font-size: 0.9em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            border-bottom: 2px solid #fff;
-            padding-bottom: 20px;
+            font-size: 0.9em; margin-bottom: 30px; line-height: 1.6;
+            border-bottom: 2px solid #fff; padding-bottom: 20px;
         }
-
-        #datetime-info p {
-            margin: 5px 0;
-        }
+        #datetime-info p { margin: 5px 0; }
 
         #countdown-container h2 {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            text-transform: uppercase;
+            font-size: 1.1em; margin-bottom: 15px; text-transform: uppercase;
             text-shadow: 0 0 2px #fff;
         }
-
         #countdown {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            line-height: 1.3;
-            border-bottom: 2px solid #fff;
-            padding-bottom: 20px;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
+            font-size: 1.8em; margin-bottom: 20px; line-height: 1.3;
+            border-bottom: 2px solid #fff; padding-bottom: 20px;
+            display: flex; justify-content: space-around; flex-wrap: wrap;
         }
-
         .countdown-segment {
-            text-align: center;
-            margin: 5px 10px;
+            text-align: center; margin: 5px 10px;
             transition: transform 0.2s ease-out, text-shadow 0.2s ease-out;
         }
-
-        .countdown-segment:hover {
-            transform: scale(1.1);
-            text-shadow: 0 0 8px #ffff00;
-        }
-
-        .countdown-value {
-            display: block;
-            font-size: 1.5em;
-        }
-
-        .countdown-label {
-            display: block;
-            font-size: 0.5em;
-            text-transform: uppercase;
-            margin-top: 5px;
-        }
+        .countdown-segment:hover { transform: scale(1.1); text-shadow: 0 0 8px #ffff00; }
+        .countdown-value { display: block; font-size: 1.5em; }
+        .countdown-label { display: block; font-size: 0.5em; text-transform: uppercase; margin-top: 5px; }
         
         #release-time-local {
-            font-size: 0.8em;
-            margin-top: 15px;
-            margin-bottom: 25px;
-            color: #ccc;
-            line-height: 1.5;
+            font-size: 0.8em; margin-top: 15px; margin-bottom: 25px;
+            color: #ccc; line-height: 1.5;
         }
 
         .fixed-message {
-            font-size: 1.3em;
-            margin-top: 20px;
-            font-weight: bold;
-            color: #ffff00;
-            animation: pulse 2s ease-in-out infinite;
-            text-shadow: 0 0 3px #ffff00;
-            position: relative;
-            z-index: 2;
+            font-size: 1.3em; margin-top: 20px; font-weight: bold; color: #ffff00;
+            animation: pulse 2s ease-in-out infinite; text-shadow: 0 0 3px #ffff00;
+            position: relative; z-index: 2;
         }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.05);
-                opacity: 0.8;
-            }
-        }
-        
-        @keyframes pulse-fast {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.15); opacity: 0.7; }
-        }
-
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
+        @keyframes pulse-fast { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.15); opacity: 0.7; } }
 
         .footer-text {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 0.7em;
-            color: #888;
-            z-index: 100;
+            position: fixed; bottom: 10px; left: 0; width: 100%;
+            text-align: center; font-size: 0.7em; color: #888; z-index: 100;
         }
 
         .sparkle {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: #ffff00;
-            border-radius: 50%;
-            opacity: 0;
-            pointer-events: none;
-            box-shadow: 0 0 4px #ffff00, 0 0 8px #ffff00;
-            z-index: 1;
+            position: absolute; width: 5px; height: 5px; background-color: #ffff00;
+            border-radius: 50%; opacity: 0; pointer-events: none;
+            box-shadow: 0 0 4px #ffff00, 0 0 8px #ffff00; z-index: 1;
         }
-
-        body.low-time-warning .sparkle {
-            animation: sparkle-animation 1.2s infinite ease-in-out;
-        }
-        
+        body.low-time-warning .sparkle { animation: sparkle-animation 1.2s infinite ease-in-out; }
         body.low-time-warning .s1 { top: 15%; left: 10%; animation-delay: 0s; }
         body.low-time-warning .s2 { top: 75%; left: 85%; animation-delay: 0.4s; }
         body.low-time-warning .s3 { top: 25%; left: 92%; animation-delay: 0.8s; }
         body.low-time-warning .s4 { top: 80%; left: 8%; animation-delay: 0.2s; }
         body.low-time-warning .s5 { top: 50%; left: 50%; animation-delay: 0.6s; width:7px; height:7px;}
+        @keyframes sparkle-animation { 0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(180deg); } 75% { opacity: 0.5; transform: scale(0.8) rotate(270deg); } }
 
-
-        @keyframes sparkle-animation {
-            0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
-            50% { opacity: 1; transform: scale(1.1) rotate(180deg); }
-            75% { opacity: 0.5; transform: scale(0.8) rotate(270deg); }
+        /* Chatbox Styles */
+        #chat-container {
+            border: 4px solid #fff;
+            padding: 15px;
+            background-color: #000;
+            width: 90%;
+            max-width: 700px;
+            margin-top: 20px;
+            font-size: 0.8em;
         }
+        #chat-title {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 10px;
+        }
+        #comments-display {
+            height: 200px;
+            overflow-y: auto;
+            border: 2px solid #555;
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .comment {
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #444;
+        }
+        .comment:last-child { border-bottom: none; }
+        .comment-user { font-weight: bold; color: #ffff00; }
+        .comment-time { font-size: 0.8em; color: #aaa; margin-left: 8px; }
+        .comment-message { word-wrap: break-word; }
+
+        #chat-input-area { display: flex; flex-direction: column; gap: 10px; }
+        #chat-input-area input[type="text"], #chat-input-area button {
+            font-family: 'Press Start 2P', monospace;
+            padding: 8px;
+            background-color: #222;
+            color: #fff;
+            border: 2px solid #fff;
+            font-size: 0.9em;
+        }
+        #chat-input-area input[type="text"]::placeholder { color: #888; }
+        #chat-input-area button { cursor: pointer; background-color: #000; }
+        #chat-input-area button:hover { background-color: #fff; color: #000; }
+        #chat-username-container { display: flex; align-items: center; gap: 10px;}
+        #chat-username-container label { white-space: nowrap;}
 
 
         @media (max-width: 600px) {
-            body {
-                padding-bottom: 40px;
-            }
-            #mute-button {
-                top: 10px;
-                left: 10px;
-                padding: 6px 10px;
-                font-size: 0.6em;
-            }
-            .menu-box {
-                padding: 20px;
-                border-width: 4px;
-                animation: glide 6s ease-in-out infinite;
-            }
-             @keyframes glide {
-                0%, 100% {
-                    transform: translateY(0);
-                }
-                50% {
-                    transform: translateY(-8px);
-                }
-            }
-            #datetime-info {
-                font-size: 0.8em;
-                margin-bottom: 20px;
-                padding-bottom: 15px;
-            }
-            #countdown-container h2 {
-                font-size: 1em;
-            }
-            #countdown {
-                font-size: 1.4em;
-            }
-            .countdown-value {
-                font-size: 1.4em;
-            }
-            .countdown-label {
-                font-size: 0.6em;
-            }
-            #release-time-local {
-                font-size: 0.75em;
-                margin-bottom: 20px;
-            }
-            .fixed-message {
-                font-size: 1.1em;
-                margin-top: 15px;
-            }
-            .footer-text {
-                font-size: 0.65em;
-                bottom: 5px;
-            }
+            body { padding-bottom: 40px; }
+            #mute-button { top: 10px; left: 10px; padding: 6px 10px; font-size: 0.6em; }
+            .menu-box { padding: 20px; border-width: 4px; animation: glide 6s ease-in-out infinite; }
+            #datetime-info { font-size: 0.8em; margin-bottom: 20px; padding-bottom: 15px; }
+            #countdown-container h2 { font-size: 1em; }
+            #countdown { font-size: 1.4em; }
+            .countdown-value { font-size: 1.4em; }
+            .countdown-label { font-size: 0.6em; }
+            #release-time-local { font-size: 0.75em; margin-bottom: 20px; }
+            .fixed-message { font-size: 1.1em; margin-top: 15px; }
+            .footer-text { font-size: 0.65em; bottom: 5px; }
             .sparkle { width: 4px; height: 4px; }
             body.low-time-warning .s5 { width:5px; height:5px;}
+            #chat-container { font-size: 0.7em; }
+            #comments-display { height: 150px; }
         }
-
         @media (max-width: 480px) {
-            #countdown {
-                font-size: 1.1em;
-                flex-direction: column;
-                align-items: center;
-            }
-            .countdown-segment {
-                margin: 10px 0;
-            }
-            .countdown-value {
-                font-size: 1.5em;
-            }
-            .countdown-label {
-                font-size: 0.7em;
-            }
-             #datetime-info {
-                font-size: 0.7em;
-            }
-            #countdown-container h2 {
-                font-size: 0.9em;
-            }
-            #release-time-local {
-                font-size: 0.7em;
-            }
-            .fixed-message {
-                font-size: 1em;
-            }
-            .footer-text {
-                font-size: 0.6em;
-            }
+            #countdown { font-size: 1.1em; flex-direction: column; align-items: center; }
+            .countdown-segment { margin: 10px 0; }
+            .countdown-value { font-size: 1.5em; }
+            .countdown-label { font-size: 0.7em; }
+            #datetime-info { font-size: 0.7em; }
+            #countdown-container h2 { font-size: 0.9em; }
+            #release-time-local { font-size: 0.7em; }
+            .fixed-message { font-size: 1em; }
+            .footer-text { font-size: 0.6em; }
             .sparkle { width: 3px; height: 3px; }
             body.low-time-warning .s5 { width:4px; height:4px;}
+            #chat-username-container { flex-direction: column; align-items: stretch;}
         }
     </style>
 </head>
@@ -290,12 +204,8 @@
     <button id="mute-button">MUTE</button>
 
     <div class="menu-box">
-        <div class="sparkle s1"></div>
-        <div class="sparkle s2"></div>
-        <div class="sparkle s3"></div>
-        <div class="sparkle s4"></div>
-        <div class="sparkle s5"></div>
-
+        <div class="sparkle s1"></div> <div class="sparkle s2"></div> <div class="sparkle s3"></div>
+        <div class="sparkle s4"></div> <div class="sparkle s5"></div>
         <div id="datetime-info">
             <p id="current-time">CURRENT TIME: LOADING...</p>
             <p id="current-timezone">TIMEZONE: LOADING...</p>
@@ -303,35 +213,57 @@
         <div id="countdown-container">
             <h2>COUNTDOWN TO CHAPTERS 1-4</h2>
             <div id="countdown">
-                <span class="countdown-segment">
-                    <span id="days" class="countdown-value">--</span>
-                    <span class="countdown-label">Days</span>
-                </span>
-                <span class="countdown-segment">
-                    <span id="hours" class="countdown-value">--</span>
-                    <span class="countdown-label">Hours</span>
-                </span>
-                <span class="countdown-segment">
-                    <span id="minutes" class="countdown-value">--</span>
-                    <span class="countdown-label">Mins</span>
-                </span>
-                <span class="countdown-segment">
-                    <span id="seconds" class="countdown-value">--</span>
-                    <span class="countdown-label">Secs</span>
-                </span>
+                <span class="countdown-segment"><span id="days" class="countdown-value">--</span><span class="countdown-label">Days</span></span>
+                <span class="countdown-segment"><span id="hours" class="countdown-value">--</span><span class="countdown-label">Hours</span></span>
+                <span class="countdown-segment"><span id="minutes" class="countdown-value">--</span><span class="countdown-label">Mins</span></span>
+                <span class="countdown-segment"><span id="seconds" class="countdown-value">--</span><span class="countdown-label">Secs</span></span>
             </div>
             <p id="release-time-local">RELEASING JUNE 4TH AT: LOADING...</p>
         </div>
-        <div class="fixed-message">
-            <p>DELTARUNE TOMORROW!</p>
+        <div class="fixed-message"> <p>DELTARUNE TOMORROW!</p> </div>
+    </div>
+
+    <div id="chat-container">
+        <div id="chat-title">* COMMENTS</div>
+        <div id="comments-display">
+            <!-- Comments will be loaded here -->
+        </div>
+        <div id="chat-input-area">
+            <div id="chat-username-container">
+                <label for="username-input">* USER:</label>
+                <input type="text" id="username-input" placeholder="Your Name" maxlength="20">
+            </div>
+            <input type="text" id="message-input" placeholder="Type your message..." maxlength="200">
+            <button id="send-button">SEND</button>
         </div>
     </div>
 
-    <div class="footer-text">
-        * Countdown by ClassicIvy
-    </div>
+    <div class="footer-text"> * Countdown by ClassicIvy </div>
 
-    <script>
+    <script type="module">
+        // Firebase V9 Modular SDK imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref as dbRef, push, onChildAdded, serverTimestamp, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        // Analytics can be initialized if needed, but not strictly required for chat
+        // import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDilZE0D6d-d49SJZXmz0l1zo0Xk1fAL4g", // IMPORTANT: Replace with YOUR project's API key
+            authDomain: "countdown-comments.firebaseapp.com",
+            databaseURL: "https://countdown-comments-default-rtdb.firebaseio.com", // IMPORTANT: Ensure this is YOUR project's DB URL
+            projectId: "countdown-comments",
+            storageBucket: "countdown-comments.firebasestorage.app",
+            messagingSenderId: "1017275486015",
+            appId: "1:1017275486015:web:3e7acc6ce7144ee4830d8a",
+            measurementId: "G-CBHL3ENW8E" // Optional
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        // const analytics = getAnalytics(app); // Uncomment if you want analytics
+
+        // --- Rest of your existing JavaScript ---
         let DEBUG_OVERRIDE_TIME_LEFT_MILLIS = null;
 
         const bgMusic = document.getElementById('bg-music');
@@ -340,10 +272,7 @@
 
         function manageMusicPlayback() {
             if (document.hasFocus() && !isManuallyMuted) {
-                bgMusic.play().catch(error => {
-                    // console.log("Autoplay was prevented or music is already playing:", error);
-                    // This catch is to prevent console errors on initial load before user interaction.
-                });
+                bgMusic.play().catch(error => {});
             } else {
                 bgMusic.pause();
             }
@@ -351,72 +280,51 @@
         
         muteButton.addEventListener('click', () => {
             isManuallyMuted = !isManuallyMuted;
-            if (isManuallyMuted) {
-                muteButton.textContent = "UNMUTE";
-            } else {
-                muteButton.textContent = "MUTE";
-            }
-            manageMusicPlayback(); // Update music based on new mute state and focus
+            muteButton.textContent = isManuallyMuted ? "UNMUTE" : "MUTE";
+            manageMusicPlayback();
         });
 
         window.addEventListener('focus', manageMusicPlayback);
-        window.addEventListener('blur', () => {
-            if (bgMusic && typeof bgMusic.pause === 'function') {
-                 bgMusic.pause();
-            }
-        });
-
+        window.addEventListener('blur', () => { if (bgMusic && typeof bgMusic.pause === 'function') bgMusic.pause(); });
 
         function updateDateTime() {
             const now = new Date();
             const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
             document.getElementById('current-time').textContent = 'CURRENT TIME: ' + now.toLocaleTimeString([], timeOptions);
-
             const offsetMinutes = now.getTimezoneOffset();
             const offsetHours = -offsetMinutes / 60;
             const tzOffsetString = 'GMT' + (offsetHours >= 0 ? '+' : '') + offsetHours;
             let ianaTimeZone = 'N/A';
-            try {
-                ianaTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            } catch (e) {
-                // console.warn("Could not determine IANA timezone.");
-            }
+            try { ianaTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
             document.getElementById('current-timezone').textContent = `TIMEZONE: ${ianaTimeZone} (${tzOffsetString})`;
         }
 
         function setStaticReleaseTime() {
             const releaseDateUTC = new Date(Date.UTC(new Date().getUTCFullYear(), 5, 4, 15, 0, 0));
-            const options = {
-                month: 'long', day: 'numeric',
-                hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
-            };
+            const options = { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' };
             try {
                 const localReleaseString = releaseDateUTC.toLocaleString(undefined, options);
                 document.getElementById('release-time-local').textContent = `RELEASES ON: ${localReleaseString}`;
             } catch (e) {
                 document.getElementById('release-time-local').textContent = 'RELEASES ON: JUNE 4TH, 8AM PDT / 11AM EDT / 5PM CET';
-                // console.warn("Could not format local release time, showing defaults.");
             }
         }
 
-        const seventeenHoursInMillis = 16 * 60 * 60 * 1000;
+        const seventeenHoursInMillis = 17 * 60 * 60 * 1000;
         const thirtyMinutesInMillis = 30 * 60 * 1000;
         const fiveMinutesInMillis = 5 * 60 * 1000;
         const thirtySecondsInMillis = 30 * 1000;
         const oneHourInMillis = 1 * 60 * 60 * 1000;
 
-
         function updateCountdown() {
             const now = new Date();
             let targetYear = now.getUTCFullYear();
-            
             const releaseDateUTCBase = { year: targetYear, month: 5, day: 4, hour: 15, minute: 0, second: 0 };
             let releaseDateUTC = new Date(Date.UTC(releaseDateUTCBase.year, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
 
             if (now.getTime() > releaseDateUTC.getTime() && typeof DEBUG_OVERRIDE_TIME_LEFT_MILLIS !== 'number') {
                 const nextYearReleaseDateUTC = new Date(Date.UTC(targetYear + 1, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
-                if (now.getTime() < nextYearReleaseDateUTC.getTime()) {
-                } else {
+                if (now.getTime() >= nextYearReleaseDateUTC.getTime()) {
                      targetYear++; 
                      releaseDateUTC = new Date(Date.UTC(targetYear, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
                 }
@@ -425,9 +333,7 @@
             let timeLeft;
             if (typeof DEBUG_OVERRIDE_TIME_LEFT_MILLIS === 'number') {
                 timeLeft = DEBUG_OVERRIDE_TIME_LEFT_MILLIS;
-                if (DEBUG_OVERRIDE_TIME_LEFT_MILLIS >= 0) { // If debugging, update internal timer too for next tick
-                     DEBUG_OVERRIDE_TIME_LEFT_MILLIS -= 1000;
-                }
+                if (DEBUG_OVERRIDE_TIME_LEFT_MILLIS >= 0) DEBUG_OVERRIDE_TIME_LEFT_MILLIS -= 1000;
             } else {
                 timeLeft = releaseDateUTC.getTime() - now.getTime();
             }
@@ -436,24 +342,20 @@
             const fixedMessageContainer = document.querySelector('.fixed-message');
             const countdownContainerH2 = document.getElementById('countdown-container').querySelector('h2');
             const countdownElement = document.getElementById('countdown');
-            
             let newPlaybackRate = 1.0;
 
             if (timeLeft < 0) {
                  countdownContainerH2.textContent = "DELTARUNE CHAPTERS 1-4";
-                 if (countdownElement) {
-                    countdownElement.innerHTML = "<span style='font-size: 0.8em;'>RELEASED!</span>";
-                }
-                if (document.getElementById('days')) document.getElementById('days').textContent = '0';
-                if (document.getElementById('hours')) document.getElementById('hours').textContent = '0';
-                if (document.getElementById('minutes')) document.getElementById('minutes').textContent = '0';
-                if (document.getElementById('seconds')) document.getElementById('seconds').textContent = '0';
+                 if (countdownElement && !countdownElement.textContent.includes("RELEASED!")) countdownElement.innerHTML = "<span style='font-size: 0.8em;'>RELEASED!</span>";
+                 if (document.getElementById('days')) document.getElementById('days').textContent = '0';
+                 if (document.getElementById('hours')) document.getElementById('hours').textContent = '0';
+                 if (document.getElementById('minutes')) document.getElementById('minutes').textContent = '0';
+                 if (document.getElementById('seconds')) document.getElementById('seconds').textContent = '0';
                 
                 document.body.classList.add('low-time-warning');
-                fixedMessageP.textContent = "IT'S OUT!";
-                fixedMessageP.style.color = "#00ff00";
+                fixedMessageP.textContent = "IT'S OUT!"; fixedMessageP.style.color = "#00ff00";
                 fixedMessageContainer.style.animation = "pulse-fast 0.5s ease-in-out infinite";
-                newPlaybackRate = 1.0; // Reset speed
+                newPlaybackRate = 1.0;
             } else {
                 const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -466,69 +368,145 @@
                 if (document.getElementById('seconds')) document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
                 
                 if (countdownElement.textContent.includes("RELEASED!")) {
-                    countdownElement.innerHTML = `
-                        <span class="countdown-segment">
-                            <span id="days" class="countdown-value">--</span>
-                            <span class="countdown-label">Days</span>
-                        </span>
-                        <span class="countdown-segment">
-                            <span id="hours" class="countdown-value">--</span>
-                            <span class="countdown-label">Hours</span>
-                        </span>
-                        <span class="countdown-segment">
-                            <span id="minutes" class="countdown-value">--</span>
-                            <span class="countdown-label">Mins</span>
-                        </span>
-                        <span class="countdown-segment">
-                            <span id="seconds" class="countdown-value">--</span>
-                            <span class="countdown-label">Secs</span>
-                        </span>`;
+                    countdownElement.innerHTML = `<span class="countdown-segment"><span id="days" class="countdown-value">--</span><span class="countdown-label">Days</span></span> <span class="countdown-segment"><span id="hours" class="countdown-value">--</span><span class="countdown-label">Hours</span></span> <span class="countdown-segment"><span id="minutes" class="countdown-value">--</span><span class="countdown-label">Mins</span></span> <span class="countdown-segment"><span id="seconds" class="countdown-value">--</span><span class="countdown-label">Secs</span></span>`;
                 }
                 countdownContainerH2.textContent = "COUNTDOWN TO CHAPTERS 1-4";
 
-                if (timeLeft < thirtySecondsInMillis) {
-                    newPlaybackRate = 1.35; // Fastest
-                } else if (timeLeft < fiveMinutesInMillis) {
-                    newPlaybackRate = 1.2;  // Faster
-                } else if (timeLeft < thirtyMinutesInMillis) {
-                    newPlaybackRate = 1.1;  // Slightly faster
-                } // else default 1.0
+                if (timeLeft < thirtySecondsInMillis) newPlaybackRate = 1.35;
+                else if (timeLeft < fiveMinutesInMillis) newPlaybackRate = 1.2;
+                else if (timeLeft < thirtyMinutesInMillis) newPlaybackRate = 1.1;
 
                 if (timeLeft < oneHourInMillis) {
-                    document.body.classList.add('low-time-warning');
-                    fixedMessageP.textContent = "ALMOST HERE!!";
-                    fixedMessageP.style.color = "#ff0000"; 
-                    fixedMessageContainer.style.animation = "pulse-fast 0.5s ease-in-out infinite";
+                    document.body.classList.add('low-time-warning'); fixedMessageP.textContent = "ALMOST HERE!!";
+                    fixedMessageP.style.color = "#ff0000"; fixedMessageContainer.style.animation = "pulse-fast 0.5s ease-in-out infinite";
                     fixedMessageContainer.style.textShadow = "0 0 5px #ff0000";
                 } else if (timeLeft < seventeenHoursInMillis) {
-                    document.body.classList.add('low-time-warning');
-                    fixedMessageP.textContent = "DELTARUNE TOMORROW!!!!";
-                    fixedMessageP.style.color = "#ffff00"; 
-                    fixedMessageContainer.style.animation = "pulse 1s ease-in-out infinite";
+                    document.body.classList.add('low-time-warning'); fixedMessageP.textContent = "GETTING CLOSER!";
+                    fixedMessageP.style.color = "#ff8c00"; fixedMessageContainer.style.animation = "pulse 1s ease-in-out infinite";
                     fixedMessageContainer.style.textShadow = "0 0 4px #ff8c00";
                 } else {
-                    document.body.classList.remove('low-time-warning');
-                    fixedMessageP.textContent = "DELTARUNE TOMORROW!";
-                    fixedMessageP.style.color = "#ffff00"; 
-                    fixedMessageContainer.style.animation = "pulse 2s ease-in-out infinite";
+                    document.body.classList.remove('low-time-warning'); fixedMessageP.textContent = "DELTARUNE TOMORROW!";
+                    fixedMessageP.style.color = "#ffff00"; fixedMessageContainer.style.animation = "pulse 2s ease-in-out infinite";
                     fixedMessageContainer.style.textShadow = "0 0 3px #ffff00";
                 }
             }
-
-            if (bgMusic.playbackRate !== newPlaybackRate) {
-                bgMusic.playbackRate = newPlaybackRate;
-            }
+            if (bgMusic.playbackRate !== newPlaybackRate) bgMusic.playbackRate = newPlaybackRate;
         }
 
+        // --- Chatbox Firebase Logic ---
+        const commentsRef = dbRef(database, 'comments');
+        const commentsDisplay = document.getElementById('comments-display');
+        const usernameInput = document.getElementById('username-input');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+
+        // Load last 30 comments and listen for new ones
+        const recentCommentsQuery = query(commentsRef, orderByChild('timestamp'), limitToLast(30));
+        onChildAdded(recentCommentsQuery, (snapshot) => {
+            const commentData = snapshot.val();
+            displayComment(commentData.username, commentData.message, commentData.timestamp);
+        });
+
+        sendButton.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            const message = messageInput.value.trim();
+
+            if (!username) {
+                alert("* Please enter a username!");
+                usernameInput.focus();
+                return;
+            }
+            if (!message) {
+                alert("* Please enter a message!");
+                messageInput.focus();
+                return;
+            }
+
+            push(commentsRef, {
+                username: username,
+                message: message,
+                timestamp: serverTimestamp() // Firebase server-side timestamp
+            }).then(() => {
+                messageInput.value = ''; // Clear message input on success
+                // Username is kept for convenience
+            }).catch((error) => {
+                console.error("* Error sending message: ", error);
+                alert("* Could not send message. Check console for errors.");
+            });
+        });
+        
+        messageInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) { // Send on Enter, allow Shift+Enter for newline (though input is single line)
+                e.preventDefault(); // Prevent default Enter behavior (e.g. form submission)
+                sendButton.click();
+            }
+        });
+
+        function displayComment(username, message, timestamp) {
+            const commentDiv = document.createElement('div');
+            commentDiv.classList.add('comment');
+
+            const userSpan = document.createElement('span');
+            userSpan.classList.add('comment-user');
+            userSpan.textContent = username + ": ";
+
+            const messageSpan = document.createElement('span');
+            messageSpan.classList.add('comment-message');
+            // Basic text sanitization (replace < and > to prevent HTML injection)
+            messageSpan.textContent = message.replace(/</g, "<").replace(/>/g, ">");
+
+
+            const timeSpan = document.createElement('span');
+            timeSpan.classList.add('comment-time');
+            timeSpan.textContent = `(${formatTimestamp(timestamp)})`;
+
+            commentDiv.appendChild(userSpan);
+            commentDiv.appendChild(messageSpan);
+            commentDiv.appendChild(timeSpan);
+            
+            commentsDisplay.appendChild(commentDiv);
+            commentsDisplay.scrollTop = commentsDisplay.scrollHeight; // Auto-scroll to bottom
+        }
+
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return 'sending...';
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Store and retrieve username from localStorage
+        if (localStorage.getItem('chatUsername')) {
+            usernameInput.value = localStorage.getItem('chatUsername');
+        }
+        usernameInput.addEventListener('change', () => {
+            localStorage.setItem('chatUsername', usernameInput.value.trim());
+        });
+
+
+        // Initialize everything on DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
             updateDateTime();
             setStaticReleaseTime();
-            updateCountdown(); // Initial call to set everything up
-            manageMusicPlayback(); // Attempt initial music play
+            updateCountdown();
+            manageMusicPlayback();
 
             setInterval(updateDateTime, 1000);
             setInterval(updateCountdown, 1000);
+            
+            // Expose debug override for console usage
+            window.DEBUG_OVERRIDE_TIME_LEFT_MILLIS = DEBUG_OVERRIDE_TIME_LEFT_MILLIS;
+            window.setDebugTime = (ms) => { 
+                DEBUG_OVERRIDE_TIME_LEFT_MILLIS = ms; 
+                updateCountdown(); 
+                console.log(`Debug time set to ${ms}ms remaining. Call updateCountdown() or wait for next tick.`);
+            };
+            window.resetDebugTime = () => {
+                DEBUG_OVERRIDE_TIME_LEFT_MILLIS = null;
+                updateCountdown();
+                console.log("Debug time reset.");
+            }
         });
+
     </script>
 </body>
 </html>
