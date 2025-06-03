@@ -17,13 +17,14 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            padding-bottom: 50px; /* Added padding for footer */
+            padding-bottom: 50px;
             box-sizing: border-box;
             text-align: center;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         .menu-box {
+            position: relative;
             border: 6px solid #fff;
             padding: 25px 40px;
             background-color: #000;
@@ -31,6 +32,7 @@
             max-width: 700px;
             animation: glide 5s ease-in-out infinite;
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+            overflow: hidden;
         }
 
         @keyframes glide {
@@ -110,6 +112,8 @@
             color: #ffff00;
             animation: pulse 2s ease-in-out infinite;
             text-shadow: 0 0 3px #ffff00;
+            position: relative;
+            z-index: 2;
         }
 
         @keyframes pulse {
@@ -122,6 +126,12 @@
                 opacity: 0.8;
             }
         }
+        
+        @keyframes pulse-fast {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.7; }
+        }
+
 
         .footer-text {
             position: fixed;
@@ -130,13 +140,43 @@
             width: 100%;
             text-align: center;
             font-size: 0.7em;
-            color: #888; /* Slightly grayed out */
+            color: #888;
             z-index: 100;
         }
 
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #ffff00;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 0 4px #ffff00, 0 0 8px #ffff00;
+            z-index: 1;
+        }
+
+        body.low-time-warning .sparkle {
+            animation: sparkle-animation 1.2s infinite ease-in-out;
+        }
+        
+        body.low-time-warning .s1 { top: 15%; left: 10%; animation-delay: 0s; }
+        body.low-time-warning .s2 { top: 75%; left: 85%; animation-delay: 0.4s; }
+        body.low-time-warning .s3 { top: 25%; left: 92%; animation-delay: 0.8s; }
+        body.low-time-warning .s4 { top: 80%; left: 8%; animation-delay: 0.2s; }
+        body.low-time-warning .s5 { top: 50%; left: 50%; animation-delay: 0.6s; width:7px; height:7px;}
+
+
+        @keyframes sparkle-animation {
+            0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.1) rotate(180deg); }
+            75% { opacity: 0.5; transform: scale(0.8) rotate(270deg); }
+        }
+
+
         @media (max-width: 600px) {
             body {
-                padding-bottom: 40px; /* Adjust padding for footer on smaller screens */
+                padding-bottom: 40px;
             }
             .menu-box {
                 padding: 20px;
@@ -180,6 +220,8 @@
                 font-size: 0.65em;
                 bottom: 5px;
             }
+            .sparkle { width: 4px; height: 4px; }
+            body.low-time-warning .s5 { width:5px; height:5px;}
         }
 
         @media (max-width: 480px) {
@@ -212,11 +254,19 @@
             .footer-text {
                 font-size: 0.6em;
             }
+            .sparkle { width: 3px; height: 3px; }
+            body.low-time-warning .s5 { width:4px; height:4px;}
         }
     </style>
 </head>
 <body>
     <div class="menu-box">
+        <div class="sparkle s1"></div>
+        <div class="sparkle s2"></div>
+        <div class="sparkle s3"></div>
+        <div class="sparkle s4"></div>
+        <div class="sparkle s5"></div>
+
         <div id="datetime-info">
             <p id="current-time">CURRENT TIME: LOADING...</p>
             <p id="current-timezone">TIMEZONE: LOADING...</p>
@@ -253,6 +303,8 @@
     </div>
 
     <script>
+        let DEBUG_OVERRIDE_TIME_LEFT_MILLIS = null; // Set this in console for testing
+
         function updateDateTime() {
             const now = new Date();
             const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
@@ -271,7 +323,7 @@
         }
 
         function setStaticReleaseTime() {
-            const releaseDateUTC = new Date(Date.UTC(new Date().getUTCFullYear(), 5, 4, 15, 0, 0)); // June is month 5 (0-indexed)
+            const releaseDateUTC = new Date(Date.UTC(new Date().getUTCFullYear(), 5, 4, 15, 0, 0));
             const options = {
                 month: 'long', day: 'numeric',
                 hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
@@ -285,29 +337,39 @@
             }
         }
 
+        const seventeenHoursInMillis = 16 * 60 * 60 * 1000;
+        const oneHourInMillis = 1 * 60 * 60 * 1000;
+
         function updateCountdown() {
             const now = new Date();
             let targetYear = now.getUTCFullYear();
             
-            const releaseDateUTCBase = { year: targetYear, month: 5, day: 4, hour: 15, minute: 0, second: 0 }; // June is month 5
+            const releaseDateUTCBase = { year: targetYear, month: 5, day: 4, hour: 15, minute: 0, second: 0 };
             let releaseDateUTC = new Date(Date.UTC(releaseDateUTCBase.year, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
 
-            if (now.getTime() > releaseDateUTC.getTime()) {
-                // If current time is past this year's June 4th, 3 PM UTC, check if it's for next year
+            if (now.getTime() > releaseDateUTC.getTime() && typeof DEBUG_OVERRIDE_TIME_LEFT_MILLIS !== 'number') { // Only advance year if not debugging with override
                 const nextYearReleaseDateUTC = new Date(Date.UTC(targetYear + 1, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
-                if (now.getTime() < nextYearReleaseDateUTC.getTime()) { // If we are not past next year's release
-                     // This condition means it has released this year.
+                if (now.getTime() < nextYearReleaseDateUTC.getTime()) {
                 } else {
-                     targetYear++; // It's for next year's countdown
+                     targetYear++; 
                      releaseDateUTC = new Date(Date.UTC(targetYear, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
                 }
             }
 
-            const timeLeft = releaseDateUTC.getTime() - now.getTime();
+            let timeLeft;
+            if (typeof DEBUG_OVERRIDE_TIME_LEFT_MILLIS === 'number') {
+                timeLeft = DEBUG_OVERRIDE_TIME_LEFT_MILLIS;
+            } else {
+                timeLeft = releaseDateUTC.getTime() - now.getTime();
+            }
+            
+            const fixedMessageP = document.querySelector('.fixed-message p');
+            const fixedMessageContainer = document.querySelector('.fixed-message');
+            const countdownContainerH2 = document.getElementById('countdown-container').querySelector('h2');
+            const countdownElement = document.getElementById('countdown');
 
             if (timeLeft < 0) {
-                 document.getElementById('countdown-container').querySelector('h2').textContent = "DELTARUNE CHAPTERS 1-4";
-                 const countdownElement = document.getElementById('countdown');
+                 countdownContainerH2.textContent = "DELTARUNE CHAPTERS 1-4";
                  if (countdownElement) {
                     countdownElement.innerHTML = "<span style='font-size: 0.8em;'>RELEASED!</span>";
                 }
@@ -315,6 +377,11 @@
                 if (document.getElementById('hours')) document.getElementById('hours').textContent = '0';
                 if (document.getElementById('minutes')) document.getElementById('minutes').textContent = '0';
                 if (document.getElementById('seconds')) document.getElementById('seconds').textContent = '0';
+                
+                document.body.classList.add('low-time-warning'); // Keep sparkles if desired for release
+                fixedMessageP.textContent = "IT'S OUT!";
+                fixedMessageP.style.color = "#00ff00";
+                fixedMessageContainer.style.animation = "pulse-fast 0.5s ease-in-out infinite";
                 return;
             }
 
@@ -327,6 +394,49 @@
             if (document.getElementById('hours')) document.getElementById('hours').textContent = String(hours).padStart(2, '0');
             if (document.getElementById('minutes')) document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
             if (document.getElementById('seconds')) document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            
+            // Ensure countdown elements are visible if they were replaced by "RELEASED!"
+            if (countdownElement.textContent.includes("RELEASED!")) {
+                 countdownElement.innerHTML = `
+                    <span class="countdown-segment">
+                        <span id="days" class="countdown-value">--</span>
+                        <span class="countdown-label">Days</span>
+                    </span>
+                    <span class="countdown-segment">
+                        <span id="hours" class="countdown-value">--</span>
+                        <span class="countdown-label">Hours</span>
+                    </span>
+                    <span class="countdown-segment">
+                        <span id="minutes" class="countdown-value">--</span>
+                        <span class="countdown-label">Mins</span>
+                    </span>
+                    <span class="countdown-segment">
+                        <span id="seconds" class="countdown-value">--</span>
+                        <span class="countdown-label">Secs</span>
+                    </span>`;
+            }
+            countdownContainerH2.textContent = "COUNTDOWN TO CHAPTERS 1-4";
+
+
+            if (timeLeft < oneHourInMillis) {
+                document.body.classList.add('low-time-warning');
+                fixedMessageP.textContent = "DELTARUNE RIGHT NOW!!";
+                fixedMessageP.style.color = "#ff0000"; 
+                fixedMessageContainer.style.animation = "pulse-fast 0.5s ease-in-out infinite";
+                fixedMessageContainer.style.textShadow = "0 0 5px #ff0000";
+            } else if (timeLeft < seventeenHoursInMillis) {
+                document.body.classList.add('low-time-warning');
+                fixedMessageP.textContent = "DELTARUNE TOMORROW!!!";
+                fixedMessageP.style.color = "#ffff00"; 
+                fixedMessageContainer.style.animation = "pulse 1s ease-in-out infinite";
+                fixedMessageContainer.style.textShadow = "0 0 4px #ff8c00";
+            } else {
+                document.body.classList.remove('low-time-warning');
+                fixedMessageP.textContent = "DELTARUNE TOMORROW!";
+                fixedMessageP.style.color = "#ffff00"; 
+                fixedMessageContainer.style.animation = "pulse 2s ease-in-out infinite";
+                fixedMessageContainer.style.textShadow = "0 0 3px #ffff00";
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
