@@ -310,7 +310,7 @@
             }
         }
 
-        const seventeenHoursInMillis = 16 * 60 * 60 * 1000;
+        const seventeenHoursInMillis = 14 * 60 * 60 * 1000;
         const thirtyMinutesInMillis = 30 * 60 * 1000;
         const fiveMinutesInMillis = 5 * 60 * 1000;
         const thirtySecondsInMillis = 30 * 1000;
@@ -381,8 +381,8 @@
                     fixedMessageP.style.color = "#ff0000"; fixedMessageContainer.style.animation = "pulse-fast 0.5s ease-in-out infinite";
                     fixedMessageContainer.style.textShadow = "0 0 5px #ff0000";
                 } else if (timeLeft < seventeenHoursInMillis) {
-                    document.body.classList.add('low-time-warning'); fixedMessageP.textContent = "GETTING CLOSER!";
-                    fixedMessageP.style.color = "#ff8c00"; fixedMessageContainer.style.animation = "pulse 1s ease-in-out infinite";
+                    document.body.classList.add('low-time-warning'); fixedMessageP.textContent = "DELTARUNE TOMORROW!!!";
+                    fixedMessageP.style.color = "#ffff00"; fixedMessageContainer.style.animation = "pulse 1s ease-in-out infinite";
                     fixedMessageContainer.style.textShadow = "0 0 4px #ff8c00";
                 } else {
                     document.body.classList.remove('low-time-warning'); fixedMessageP.textContent = "DELTARUNE TOMORROW!";
