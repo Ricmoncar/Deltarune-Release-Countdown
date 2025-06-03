@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DELTARUNE Countdown</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Press Start 2P', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 50px; /* Added padding for footer */
+            box-sizing: border-box;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .menu-box {
+            border: 6px solid #fff;
+            padding: 25px 40px;
+            background-color: #000;
+            width: 90%;
+            max-width: 700px;
+            animation: glide 5s ease-in-out infinite;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes glide {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        #datetime-info {
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 20px;
+        }
+
+        #datetime-info p {
+            margin: 5px 0;
+        }
+
+        #countdown-container h2 {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-shadow: 0 0 2px #fff;
+        }
+
+        #countdown {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            line-height: 1.3;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .countdown-segment {
+            text-align: center;
+            margin: 5px 10px;
+            transition: transform 0.2s ease-out, text-shadow 0.2s ease-out;
+        }
+
+        .countdown-segment:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 8px #ffff00;
+        }
+
+        .countdown-value {
+            display: block;
+            font-size: 1.5em;
+        }
+
+        .countdown-label {
+            display: block;
+            font-size: 0.5em;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        
+        #release-time-local {
+            font-size: 0.8em;
+            margin-top: 15px;
+            margin-bottom: 25px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .fixed-message {
+            font-size: 1.3em;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #ffff00;
+            animation: pulse 2s ease-in-out infinite;
+            text-shadow: 0 0 3px #ffff00;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        .footer-text {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.7em;
+            color: #888; /* Slightly grayed out */
+            z-index: 100;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding-bottom: 40px; /* Adjust padding for footer on smaller screens */
+            }
+            .menu-box {
+                padding: 20px;
+                border-width: 4px;
+                animation: glide 6s ease-in-out infinite;
+            }
+             @keyframes glide {
+                0%, 100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-8px);
+                }
+            }
+            #datetime-info {
+                font-size: 0.8em;
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+            }
+            #countdown-container h2 {
+                font-size: 1em;
+            }
+            #countdown {
+                font-size: 1.4em;
+            }
+            .countdown-value {
+                font-size: 1.4em;
+            }
+            .countdown-label {
+                font-size: 0.6em;
+            }
+            #release-time-local {
+                font-size: 0.75em;
+                margin-bottom: 20px;
+            }
+            .fixed-message {
+                font-size: 1.1em;
+                margin-top: 15px;
+            }
+            .footer-text {
+                font-size: 0.65em;
+                bottom: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #countdown {
+                font-size: 1.1em;
+                flex-direction: column;
+                align-items: center;
+            }
+            .countdown-segment {
+                margin: 10px 0;
+            }
+            .countdown-value {
+                font-size: 1.5em;
+            }
+            .countdown-label {
+                font-size: 0.7em;
+            }
+             #datetime-info {
+                font-size: 0.7em;
+            }
+            #countdown-container h2 {
+                font-size: 0.9em;
+            }
+            #release-time-local {
+                font-size: 0.7em;
+            }
+            .fixed-message {
+                font-size: 1em;
+            }
+            .footer-text {
+                font-size: 0.6em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-box">
+        <div id="datetime-info">
+            <p id="current-time">CURRENT TIME: LOADING...</p>
+            <p id="current-timezone">TIMEZONE: LOADING...</p>
+        </div>
+        <div id="countdown-container">
+            <h2>COUNTDOWN TO CHAPTERS 1-4</h2>
+            <div id="countdown">
+                <span class="countdown-segment">
+                    <span id="days" class="countdown-value">--</span>
+                    <span class="countdown-label">Days</span>
+                </span>
+                <span class="countdown-segment">
+                    <span id="hours" class="countdown-value">--</span>
+                    <span class="countdown-label">Hours</span>
+                </span>
+                <span class="countdown-segment">
+                    <span id="minutes" class="countdown-value">--</span>
+                    <span class="countdown-label">Mins</span>
+                </span>
+                <span class="countdown-segment">
+                    <span id="seconds" class="countdown-value">--</span>
+                    <span class="countdown-label">Secs</span>
+                </span>
+            </div>
+            <p id="release-time-local">RELEASING JUNE 4TH AT: LOADING...</p>
+        </div>
+        <div class="fixed-message">
+            <p>DELTARUNE TOMORROW!</p>
+        </div>
+    </div>
+
+    <div class="footer-text">
+        * Countdown by ClassicIvy
+    </div>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            document.getElementById('current-time').textContent = 'CURRENT TIME: ' + now.toLocaleTimeString([], timeOptions);
+
+            const offsetMinutes = now.getTimezoneOffset();
+            const offsetHours = -offsetMinutes / 60;
+            const tzOffsetString = 'GMT' + (offsetHours >= 0 ? '+' : '') + offsetHours;
+            let ianaTimeZone = 'N/A';
+            try {
+                ianaTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            } catch (e) {
+                console.warn("Could not determine IANA timezone.");
+            }
+            document.getElementById('current-timezone').textContent = `TIMEZONE: ${ianaTimeZone} (${tzOffsetString})`;
+        }
+
+        function setStaticReleaseTime() {
+            const releaseDateUTC = new Date(Date.UTC(new Date().getUTCFullYear(), 5, 4, 15, 0, 0)); // June is month 5 (0-indexed)
+            const options = {
+                month: 'long', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+            };
+            try {
+                const localReleaseString = releaseDateUTC.toLocaleString(undefined, options);
+                document.getElementById('release-time-local').textContent = `RELEASES ON: ${localReleaseString}`;
+            } catch (e) {
+                document.getElementById('release-time-local').textContent = 'RELEASES ON: JUNE 4TH, 8AM PDT / 11AM EDT / 5PM CET';
+                console.warn("Could not format local release time, showing defaults.");
+            }
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            let targetYear = now.getUTCFullYear();
+            
+            const releaseDateUTCBase = { year: targetYear, month: 5, day: 4, hour: 15, minute: 0, second: 0 }; // June is month 5
+            let releaseDateUTC = new Date(Date.UTC(releaseDateUTCBase.year, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
+
+            if (now.getTime() > releaseDateUTC.getTime()) {
+                // If current time is past this year's June 4th, 3 PM UTC, check if it's for next year
+                const nextYearReleaseDateUTC = new Date(Date.UTC(targetYear + 1, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
+                if (now.getTime() < nextYearReleaseDateUTC.getTime()) { // If we are not past next year's release
+                     // This condition means it has released this year.
+                } else {
+                     targetYear++; // It's for next year's countdown
+                     releaseDateUTC = new Date(Date.UTC(targetYear, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
+                }
+            }
+
+            const timeLeft = releaseDateUTC.getTime() - now.getTime();
+
+            if (timeLeft < 0) {
+                 document.getElementById('countdown-container').querySelector('h2').textContent = "DELTARUNE CHAPTERS 1-4";
+                 const countdownElement = document.getElementById('countdown');
+                 if (countdownElement) {
+                    countdownElement.innerHTML = "<span style='font-size: 0.8em;'>RELEASED!</span>";
+                }
+                if (document.getElementById('days')) document.getElementById('days').textContent = '0';
+                if (document.getElementById('hours')) document.getElementById('hours').textContent = '0';
+                if (document.getElementById('minutes')) document.getElementById('minutes').textContent = '0';
+                if (document.getElementById('seconds')) document.getElementById('seconds').textContent = '0';
+                return;
+            }
+
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            if (document.getElementById('days')) document.getElementById('days').textContent = String(days).padStart(2, '0');
+            if (document.getElementById('hours')) document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            if (document.getElementById('minutes')) document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            if (document.getElementById('seconds')) document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateTime();
+            setStaticReleaseTime();
+            updateCountdown();
+            setInterval(updateDateTime, 1000);
+            setInterval(updateCountdown, 1000);
+        });
+    </script>
+</body>
+</html>
