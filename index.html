@@ -23,6 +23,26 @@
             overflow: hidden;
         }
 
+        #mute-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            padding: 8px 12px;
+            font-family: 'Press Start 2P', monospace;
+            background-color: #000;
+            color: #fff;
+            border: 3px solid #fff;
+            cursor: pointer;
+            font-size: 0.7em; /* Smaller font for button */
+            z-index: 200;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        #mute-button:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+
         .menu-box {
             position: relative;
             border: 6px solid #fff;
@@ -178,6 +198,12 @@
             body {
                 padding-bottom: 40px;
             }
+            #mute-button {
+                top: 10px;
+                left: 10px;
+                padding: 6px 10px;
+                font-size: 0.6em;
+            }
             .menu-box {
                 padding: 20px;
                 border-width: 4px;
@@ -260,6 +286,9 @@
     </style>
 </head>
 <body>
+    <audio id="bg-music" loop src="castle.mp3"></audio>
+    <button id="mute-button">MUTE</button>
+
     <div class="menu-box">
         <div class="sparkle s1"></div>
         <div class="sparkle s2"></div>
@@ -303,7 +332,40 @@
     </div>
 
     <script>
-        let DEBUG_OVERRIDE_TIME_LEFT_MILLIS = null; // Set this in console for testing
+        let DEBUG_OVERRIDE_TIME_LEFT_MILLIS = null;
+
+        const bgMusic = document.getElementById('bg-music');
+        const muteButton = document.getElementById('mute-button');
+        let isManuallyMuted = false;
+
+        function manageMusicPlayback() {
+            if (document.hasFocus() && !isManuallyMuted) {
+                bgMusic.play().catch(error => {
+                    // console.log("Autoplay was prevented or music is already playing:", error);
+                    // This catch is to prevent console errors on initial load before user interaction.
+                });
+            } else {
+                bgMusic.pause();
+            }
+        }
+        
+        muteButton.addEventListener('click', () => {
+            isManuallyMuted = !isManuallyMuted;
+            if (isManuallyMuted) {
+                muteButton.textContent = "UNMUTE";
+            } else {
+                muteButton.textContent = "MUTE";
+            }
+            manageMusicPlayback(); // Update music based on new mute state and focus
+        });
+
+        window.addEventListener('focus', manageMusicPlayback);
+        window.addEventListener('blur', () => {
+            if (bgMusic && typeof bgMusic.pause === 'function') {
+                 bgMusic.pause();
+            }
+        });
+
 
         function updateDateTime() {
             const now = new Date();
@@ -317,7 +379,7 @@
             try {
                 ianaTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             } catch (e) {
-                console.warn("Could not determine IANA timezone.");
+                // console.warn("Could not determine IANA timezone.");
             }
             document.getElementById('current-timezone').textContent = `TIMEZONE: ${ianaTimeZone} (${tzOffsetString})`;
         }
@@ -333,12 +395,16 @@
                 document.getElementById('release-time-local').textContent = `RELEASES ON: ${localReleaseString}`;
             } catch (e) {
                 document.getElementById('release-time-local').textContent = 'RELEASES ON: JUNE 4TH, 8AM PDT / 11AM EDT / 5PM CET';
-                console.warn("Could not format local release time, showing defaults.");
+                // console.warn("Could not format local release time, showing defaults.");
             }
         }
 
         const seventeenHoursInMillis = 16 * 60 * 60 * 1000;
+        const thirtyMinutesInMillis = 30 * 60 * 1000;
+        const fiveMinutesInMillis = 5 * 60 * 1000;
+        const thirtySecondsInMillis = 30 * 1000;
         const oneHourInMillis = 1 * 60 * 60 * 1000;
+
 
         function updateCountdown() {
             const now = new Date();
@@ -347,7 +413,7 @@
             const releaseDateUTCBase = { year: targetYear, month: 5, day: 4, hour: 15, minute: 0, second: 0 };
             let releaseDateUTC = new Date(Date.UTC(releaseDateUTCBase.year, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
 
-            if (now.getTime() > releaseDateUTC.getTime() && typeof DEBUG_OVERRIDE_TIME_LEFT_MILLIS !== 'number') { // Only advance year if not debugging with override
+            if (now.getTime() > releaseDateUTC.getTime() && typeof DEBUG_OVERRIDE_TIME_LEFT_MILLIS !== 'number') {
                 const nextYearReleaseDateUTC = new Date(Date.UTC(targetYear + 1, releaseDateUTCBase.month, releaseDateUTCBase.day, releaseDateUTCBase.hour, releaseDateUTCBase.minute, releaseDateUTCBase.second));
                 if (now.getTime() < nextYearReleaseDateUTC.getTime()) {
                 } else {
@@ -359,6 +425,9 @@
             let timeLeft;
             if (typeof DEBUG_OVERRIDE_TIME_LEFT_MILLIS === 'number') {
                 timeLeft = DEBUG_OVERRIDE_TIME_LEFT_MILLIS;
+                if (DEBUG_OVERRIDE_TIME_LEFT_MILLIS >= 0) { // If debugging, update internal timer too for next tick
+                     DEBUG_OVERRIDE_TIME_LEFT_MILLIS -= 1000;
+                }
             } else {
                 timeLeft = releaseDateUTC.getTime() - now.getTime();
             }
@@ -367,6 +436,8 @@
             const fixedMessageContainer = document.querySelector('.fixed-message');
             const countdownContainerH2 = document.getElementById('countdown-container').querySelector('h2');
             const countdownElement = document.getElementById('countdown');
+            
+            let newPlaybackRate = 1.0;
 
             if (timeLeft < 0) {
                  countdownContainerH2.textContent = "DELTARUNE CHAPTERS 1-4";
@@ -378,71 +449,83 @@
                 if (document.getElementById('minutes')) document.getElementById('minutes').textContent = '0';
                 if (document.getElementById('seconds')) document.getElementById('seconds').textContent = '0';
                 
-                document.body.classList.add('low-time-warning'); // Keep sparkles if desired for release
+                document.body.classList.add('low-time-warning');
                 fixedMessageP.textContent = "IT'S OUT!";
                 fixedMessageP.style.color = "#00ff00";
                 fixedMessageContainer.style.animation = "pulse-fast 0.5s ease-in-out infinite";
-                return;
-            }
-
-            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-            if (document.getElementById('days')) document.getElementById('days').textContent = String(days).padStart(2, '0');
-            if (document.getElementById('hours')) document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-            if (document.getElementById('minutes')) document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-            if (document.getElementById('seconds')) document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-            
-            // Ensure countdown elements are visible if they were replaced by "RELEASED!"
-            if (countdownElement.textContent.includes("RELEASED!")) {
-                 countdownElement.innerHTML = `
-                    <span class="countdown-segment">
-                        <span id="days" class="countdown-value">--</span>
-                        <span class="countdown-label">Days</span>
-                    </span>
-                    <span class="countdown-segment">
-                        <span id="hours" class="countdown-value">--</span>
-                        <span class="countdown-label">Hours</span>
-                    </span>
-                    <span class="countdown-segment">
-                        <span id="minutes" class="countdown-value">--</span>
-                        <span class="countdown-label">Mins</span>
-                    </span>
-                    <span class="countdown-segment">
-                        <span id="seconds" class="countdown-value">--</span>
-                        <span class="countdown-label">Secs</span>
-                    </span>`;
-            }
-            countdownContainerH2.textContent = "COUNTDOWN TO CHAPTERS 1-4";
-
-
-            if (timeLeft < oneHourInMillis) {
-                document.body.classList.add('low-time-warning');
-                fixedMessageP.textContent = "DELTARUNE RIGHT NOW!!";
-                fixedMessageP.style.color = "#ff0000"; 
-                fixedMessageContainer.style.animation = "pulse-fast 0.5s ease-in-out infinite";
-                fixedMessageContainer.style.textShadow = "0 0 5px #ff0000";
-            } else if (timeLeft < seventeenHoursInMillis) {
-                document.body.classList.add('low-time-warning');
-                fixedMessageP.textContent = "DELTARUNE TOMORROW!!!";
-                fixedMessageP.style.color = "#ffff00"; 
-                fixedMessageContainer.style.animation = "pulse 1s ease-in-out infinite";
-                fixedMessageContainer.style.textShadow = "0 0 4px #ff8c00";
+                newPlaybackRate = 1.0; // Reset speed
             } else {
-                document.body.classList.remove('low-time-warning');
-                fixedMessageP.textContent = "DELTARUNE TOMORROW!";
-                fixedMessageP.style.color = "#ffff00"; 
-                fixedMessageContainer.style.animation = "pulse 2s ease-in-out infinite";
-                fixedMessageContainer.style.textShadow = "0 0 3px #ffff00";
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                if (document.getElementById('days')) document.getElementById('days').textContent = String(days).padStart(2, '0');
+                if (document.getElementById('hours')) document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                if (document.getElementById('minutes')) document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                if (document.getElementById('seconds')) document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+                
+                if (countdownElement.textContent.includes("RELEASED!")) {
+                    countdownElement.innerHTML = `
+                        <span class="countdown-segment">
+                            <span id="days" class="countdown-value">--</span>
+                            <span class="countdown-label">Days</span>
+                        </span>
+                        <span class="countdown-segment">
+                            <span id="hours" class="countdown-value">--</span>
+                            <span class="countdown-label">Hours</span>
+                        </span>
+                        <span class="countdown-segment">
+                            <span id="minutes" class="countdown-value">--</span>
+                            <span class="countdown-label">Mins</span>
+                        </span>
+                        <span class="countdown-segment">
+                            <span id="seconds" class="countdown-value">--</span>
+                            <span class="countdown-label">Secs</span>
+                        </span>`;
+                }
+                countdownContainerH2.textContent = "COUNTDOWN TO CHAPTERS 1-4";
+
+                if (timeLeft < thirtySecondsInMillis) {
+                    newPlaybackRate = 1.35; // Fastest
+                } else if (timeLeft < fiveMinutesInMillis) {
+                    newPlaybackRate = 1.2;  // Faster
+                } else if (timeLeft < thirtyMinutesInMillis) {
+                    newPlaybackRate = 1.1;  // Slightly faster
+                } // else default 1.0
+
+                if (timeLeft < oneHourInMillis) {
+                    document.body.classList.add('low-time-warning');
+                    fixedMessageP.textContent = "ALMOST HERE!!";
+                    fixedMessageP.style.color = "#ff0000"; 
+                    fixedMessageContainer.style.animation = "pulse-fast 0.5s ease-in-out infinite";
+                    fixedMessageContainer.style.textShadow = "0 0 5px #ff0000";
+                } else if (timeLeft < seventeenHoursInMillis) {
+                    document.body.classList.add('low-time-warning');
+                    fixedMessageP.textContent = "DELTARUNE TOMORROW!!!!";
+                    fixedMessageP.style.color = "#ffff00"; 
+                    fixedMessageContainer.style.animation = "pulse 1s ease-in-out infinite";
+                    fixedMessageContainer.style.textShadow = "0 0 4px #ff8c00";
+                } else {
+                    document.body.classList.remove('low-time-warning');
+                    fixedMessageP.textContent = "DELTARUNE TOMORROW!";
+                    fixedMessageP.style.color = "#ffff00"; 
+                    fixedMessageContainer.style.animation = "pulse 2s ease-in-out infinite";
+                    fixedMessageContainer.style.textShadow = "0 0 3px #ffff00";
+                }
+            }
+
+            if (bgMusic.playbackRate !== newPlaybackRate) {
+                bgMusic.playbackRate = newPlaybackRate;
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             updateDateTime();
             setStaticReleaseTime();
-            updateCountdown();
+            updateCountdown(); // Initial call to set everything up
+            manageMusicPlayback(); // Attempt initial music play
+
             setInterval(updateDateTime, 1000);
             setInterval(updateCountdown, 1000);
         });
